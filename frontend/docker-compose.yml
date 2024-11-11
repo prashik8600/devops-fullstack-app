@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: postgres_password
     volumes:
       - 'postgres_data:/var/lib/postgresql@14/data:rw'
-    container_name: PostgreSQL
+    container_name: "PostgreSQL"
     healthcheck:
       test:
         - CMD-SHELL
@@ -27,7 +27,7 @@ services:
       DB_USER: postgres
       DB_NAME: postgres
       DB_PASSWORD: postgres_password
-    container_name: Backend
+    container_name: "Backend"
     depends_on:
       postgres:
         condition: service_healthy
@@ -37,6 +37,6 @@ services:
     build: ../frontend
     ports:
       - '3000:3000'
-    container_name: Frontend
+    container_name: "Frontend"
 volumes:
   postgres_data: null
