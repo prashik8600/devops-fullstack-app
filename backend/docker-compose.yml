@@ -1,4 +1,3 @@
-
 version: '3.8'
 services:
   postgres:
@@ -10,16 +9,13 @@ services:
       POSTGRES_PASSWORD: postgres_password
     volumes:
       - 'postgres_data:/var/lib/postgresql@14/data:rw'
-    container_name: "PostgreSQL"
+    network_mode: "host"
+    container_name: PostgreSQL
     healthcheck:
-      test:
-        - CMD-SHELL
-        - pg_isready -U postgres
+      test: ['CMD-SHEL' , 'pg_isready -U postgres']
       timeout: 5s
       retries: 5
       start_period: 20s
-    ports:
-      - '5432:5432'
   backend:
     build: .
     environment:
@@ -28,17 +24,14 @@ services:
       DB_USER: postgres
       DB_NAME: postgres
       DB_PASSWORD: postgres_password
-    container_name: "Backend"
+    network_mode: "host"
+    container_name: Backend
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
-      - '8080:8080'
   frontend:
     build: ../frontend
-    ports:
-      - '3000:3000'
-    container_name: "Frontend"
+    network_mode: "host"
+    container_name: Frontend
 volumes:
   postgres_data: null
-
