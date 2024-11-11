@@ -1,47 +1,42 @@
 version: '3.8'
-
 services:
   postgres:
-    image: postgres:latest
+    image: 'postgres:latest'
     environment:
       DB_HOST: postgres
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres_password
     volumes:
-      - postgres_data:/var/lib/postgresql@14/data:rw
-    container_name: "PostgreSQL"
+      - 'postgres_data:/var/lib/postgresql@14/data:rw'
+    container_name: PostgreSQL
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      test:
+        - CMD-SHELL
+        - pg_isready -U postgres
       timeout: 5s
       retries: 5
       start_period: 20s
-
     ports:
-      - "5432:5432"
-    
-  
+      - '5432:5432'
   backend:
-    build: .                           
+    build: .
     environment:
-      DB_HOST: postgreSQL               
+      DB_HOST: postgreSQL
       DB_PORT: 5432
       DB_USER: postgres
       DB_NAME: postgres
       DB_PASSWORD: postgres_password
-    container_name: "Backend"
+    container_name: Backend
     depends_on:
       postgres:
-        condition: service_healthy                          
+        condition: service_healthy
     ports:
-      - "8080:8080"
-
-  
+      - '8080:8080'
   frontend:
     build: ../frontend
     ports:
-      - "3000:3000"
-    container_name: "Frontend"
-
+      - '3000:3000'
+    container_name: Frontend
 volumes:
-  postgres_data:
+  postgres_data: null
