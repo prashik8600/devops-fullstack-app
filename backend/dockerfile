@@ -1,0 +1,10 @@
+FROM golang:1.19 
+WORKDIR /app/backend
+COPY go.mod go.sum ./
+# CMD go run main.go 
+RUN go mod download && go mod verify
+COPY . .
+RUN go build -o main .
+EXPOSE 8081
+
+CMD ["./main"]
