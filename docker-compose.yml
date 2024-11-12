@@ -18,7 +18,8 @@ services:
     container_name: "PostgreSQL"
 
   backend:
-    image: prashw23/backend:latest 
+    # image: prashw23/backend:latest
+    image: backend/ .
     environment:
       DB_HOST: postgreSQL
       DB_PORT: 5432
@@ -33,7 +34,8 @@ services:
         condition: service_healthy
 
   frontend:
-    image: prashw23/frontend:latest  
+    # image: prashw23/frontend:latest  
+    image : frontend/ .
     ports:
       - '3000:3000'
     container_name: "Frontend"
