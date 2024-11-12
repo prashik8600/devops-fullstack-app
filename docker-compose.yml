@@ -21,15 +21,16 @@ services:
     image: prashw23/backend:latest  
     ports:
       - '8080:8080'
+    container_name: "Backend"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   frontend:
     image: prashw23/frontend:latest  
     ports:
       - '3000:3000'
-    depends_on:
-      - backend
+    container_name: "Frontend"
 
 volumes:
   postgres_data:
