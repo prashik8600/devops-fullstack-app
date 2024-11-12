@@ -1,0 +1,35 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    volumes:
+      - 'postgres_data:/var/lib/postgresql/data:rw'
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    container_name: "PostgreSQL"
+
+  backend:
+    image: your-dockerhub-username/backend:latest  # Placeholder for Jenkins to replace with actual tag
+    ports:
+      - '8080:8080'
+    depends_on:
+      - postgres
+
+  frontend:
+    image: your-dockerhub-username/frontend:latest  # Placeholder for Jenkins to replace with actual tag
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
