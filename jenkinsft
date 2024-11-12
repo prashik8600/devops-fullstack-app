@@ -57,7 +57,7 @@ pipeline {
                     sed -i "s|prashw23/frontend:latest|${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}|g" docker-compose.yml
                     docker-compose down
                     docker-compose pull  # Pull the latest images from Docker Hub
-                    docker-compose up -d
+                    docker-compose up 
                     '''
                 }
             }
