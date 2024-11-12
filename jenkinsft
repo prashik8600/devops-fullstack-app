@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    environment {
+        // Docker Hub credentials and repository names
+        DOCKER_HUB_CREDENTIALS = credentials( 'DockerCred' )
+        DOCKER_HUB_REPO_BACKEND = "prashw23/backend"
+        DOCKER_HUB_REPO_FRONTEND = "prashw23/frontend"
+        IMAGE_TAG = "latest"  // or use "${BUILD_NUMBER}" for unique tags
+        registry_cred = 'DockerCred'
+    }
+    stages {
+        stage('checkout stage'){
+            steps{
+                echo 'Logging into git' 
+                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/prashik8600/devops-fullstack-app.git']])
+            }
+        }
+        stage('Build Docker Images') {
+            steps{
+                 dir('backend'){
+                 sh 'docker build -t ${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG} .'
+                 }
+                 dir('frontend'){
+                 sh 'docker build -t ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG} .'
+                 }
+            }
+                    // // Build backend and frontend images with tags
+                    // sh "docker build -t ${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG} -f backend/Dockerfile.backend ."
+                    // sh "docker build -t ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG} -f frontend/Dockerfile.frontend .
+        }
+        stage('DockerLogin'){
+            steps{
+                script{
+                    docker.withRegistry('',registry_cred){
+                        echo 'Docker Login successfull'
+                }
+            }
+        }
+     }
+        // stage('Uploading images to DockerHub'){
+        //     steps {
+        //         script {
+        //             // Push backend and frontend images to Docker Hub
+        //             sh "docker push ${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG}"
+        //             sh "docker push ${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}"
+        //         }
+        //     }
+        // }
+        
+        stage('Deploy with Docker Compose') {
+            steps {
+                script {
+                    // Update docker-compose.yml with the actual image tags and deploy
+                    sh '''
+                    sed -i "s|prashw23/backend:latest|${DOCKER_HUB_REPO_BACKEND}:${IMAGE_TAG}|g" docker-compose.yml
+                    sed -i "s|prashw23/frontend:latest|${DOCKER_HUB_REPO_FRONTEND}:${IMAGE_TAG}|g" docker-compose.yml
+                    docker-compose down
+                    docker-compose pull  # Pull the latest images from Docker Hub
+                    docker-compose up -d
+                    '''
+                }
+            }
+        }
+    }
+}
