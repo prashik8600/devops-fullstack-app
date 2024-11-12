@@ -18,7 +18,13 @@ services:
     container_name: "PostgreSQL"
 
   backend:
-    image: prashw23/backend:latest  
+    image: prashw23/backend:latest 
+    environment:
+      DB_HOST: postgreSQL
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_NAME: postgres
+      DB_PASSWORD: postgres_password
     ports:
       - '8080:8080'
     container_name: "Backend"
