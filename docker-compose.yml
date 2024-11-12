@@ -18,14 +18,14 @@ services:
     container_name: "PostgreSQL"
 
   backend:
-    image: your-dockerhub-username/backend:latest  # Placeholder for Jenkins to replace with actual tag
+    image: prashw23/backend:latest  
     ports:
       - '8080:8080'
     depends_on:
       - postgres
 
   frontend:
-    image: your-dockerhub-username/frontend:latest  # Placeholder for Jenkins to replace with actual tag
+    image: prashw23/frontend:latest  
     ports:
       - '3000:3000'
     depends_on:
